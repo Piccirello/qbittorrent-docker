@@ -29,8 +29,6 @@ PLATFORMS="linux/amd64,linux/arm64"
 TAG_WITH_LATEST="true"
 PUSH_IMAGES="--push"
 
-NOW=$(date)
-
 # parse command
 if [ $# -eq 0 ]; then
   command=""
@@ -69,7 +67,6 @@ if [ "$command" == "all" ] || [ "$command" == "libtorrent" ]; then
     -t "$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
     -t "$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_MAJOR_VERSION.$LIBTORRENT_MINOR_VERSION" \
     ${TAG_WITH_LATEST:+ -t "$LIBTORRENT_IMAGE_NAME:latest"} \
-    --build-arg BUST_CACHE="$NOW" \
     --build-arg BASE_IMAGE="$BASE_IMAGE" \
     --build-arg VERSION="$LIBTORRENT_VERSION" \
     --platform "$PLATFORMS" \
@@ -84,7 +81,6 @@ if [ "$command" == "all" ] || [ "$command" == "qbittorrent" ]; then
     -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_VERSION" \
     -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_MAJOR_VERSION.$QBITTORRENT_MINOR_VERSION" \
     ${TAG_WITH_LATEST:+ -t "$QBITTORRENT_IMAGE_NAME:latest"} \
-    --build-arg BUST_CACHE="$NOW" \
     --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
     --build-arg VERSION="$QBITTORRENT_VERSION" \
     --platform "$PLATFORMS" \

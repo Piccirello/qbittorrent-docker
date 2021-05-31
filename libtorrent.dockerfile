@@ -1,9 +1,6 @@
 ARG BASE_IMAGE=ubuntu:20.04
 FROM $BASE_IMAGE
 
-ARG BUST_CACHE
-ARG VERSION
-
 RUN echo "Starting build"
 
 # Ubuntu 20.04 workaround
@@ -27,9 +24,10 @@ RUN apt-get update && apt-get install -y \
     make \
     wget
 
-WORKDIR /usr/src/libtorrent
-
+ARG VERSION
 ARG LIBTORRENT_SRC=https://github.com/arvidn/libtorrent/releases/download/v${VERSION}/libtorrent-rasterbar-${VERSION}.tar.gz
+
+WORKDIR /usr/src/libtorrent
 
 # TODO verify download SHA256
 # download libtorrent

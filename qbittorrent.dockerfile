@@ -1,9 +1,6 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-ARG BUST_CACHE
-ARG VERSION
-
 RUN echo "Starting build"
 
 # Ubuntu 20.04 workaround
@@ -34,11 +31,11 @@ RUN apt-get update && apt-get install -y \
     wget \
     zlib1g-dev
 
-WORKDIR /usr/src/qbittorrent
-
+ARG VERSION
 ARG QBITTORRENT_SRC=https://github.com/qbittorrent/qBittorrent/archive/release-${VERSION}.tar.gz
 
-# TODO verify download SHA256
+WORKDIR /usr/src/qbittorrent
+
 # download qbittorrent
 RUN wget -q $QBITTORRENT_SRC -O qbittorrent.tar.gz \
     && bsdtar --strip-components=1 -xzf ./qbittorrent.tar.gz \
