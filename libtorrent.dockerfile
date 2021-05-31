@@ -31,7 +31,7 @@ WORKDIR /usr/src/libtorrent
 
 # TODO verify download SHA256
 # download libtorrent
-RUN wget -q $LIBTORRENT_SRC -O libtorrent.tar.gz \
+RUN wget -q $LIBTORRENT_SRC -O libtorrent.tar.gz --secure-protocol=TLSv1_2 --https-only \
     && bsdtar --strip-components=1 -xzf libtorrent.tar.gz \
     && rm libtorrent.tar.gz
 

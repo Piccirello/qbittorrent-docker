@@ -52,6 +52,7 @@ for arg; do
   fi
 
   if [ "$arg" = "--no-push" ]; then
+    # load the image into the local registry
     PUSH_IMAGES="--load"
   fi
 done

@@ -37,7 +37,7 @@ ARG QBITTORRENT_SRC=https://github.com/qbittorrent/qBittorrent/archive/release-$
 WORKDIR /usr/src/qbittorrent
 
 # download qbittorrent
-RUN wget -q $QBITTORRENT_SRC -O qbittorrent.tar.gz \
+RUN wget -q $QBITTORRENT_SRC -O qbittorrent.tar.gz --secure-protocol=TLSv1_2 --https-only \
     && bsdtar --strip-components=1 -xzf ./qbittorrent.tar.gz \
     && rm qbittorrent.tar.gz
 
