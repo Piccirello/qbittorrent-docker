@@ -75,5 +75,5 @@ USER qbtuser
 ENV XDG_CONFIG_HOME="/config" \
     XDG_DATA_HOME="/data"
 
-ENTRYPOINT ["bash"]
+ENTRYPOINT ["bash", "-c"]
 CMD ["/usr/bin/qbittorrent-nox"]
