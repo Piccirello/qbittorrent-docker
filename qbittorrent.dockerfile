@@ -26,7 +26,9 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     make \
     pkg-config \
-    qt5-default \
+    qtbase5-dev \
+    qt5-qmake \
+    qtbase5-dev-tools \
     qttools5-dev-tools \
     wget \
     zlib1g-dev

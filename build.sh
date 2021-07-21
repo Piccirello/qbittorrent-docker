@@ -3,7 +3,7 @@ set -euo pipefail
 
 # CONFIG
 
-BASE_IMAGE="ubuntu:20.04"
+BASE_IMAGE="ubuntu:21.04"
 
 # libtorrent
 LIBTORRENT_DOCKER_FILE="./libtorrent.dockerfile"
