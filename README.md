@@ -1,2 +1,2 @@
 # qbittorrent-docker
-Build libtorrent and qbittorrent in docker
+Build libtorrent and qBittorrent from source in Docker on Ubuntu 22.04.
