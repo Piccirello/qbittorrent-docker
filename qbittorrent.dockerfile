@@ -63,6 +63,11 @@ RUN apt-get update && apt-get install -y \
     libqt5xml5 \
     libssl3 \
     python3 \
+    # used for sending email
+    postfix \
+    # used by completion scripts
+    curl \
+    mailutils \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY --from=0 /usr/local/lib/libtorrent-rasterbar.* /usr/local/lib/
