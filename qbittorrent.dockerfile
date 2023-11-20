@@ -26,7 +26,9 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     make \
     pkg-config \
-    qt5-default \
+    qtbase5-dev \
+    qt5-qmake \
+    qtbase5-dev-tools \
     qttools5-dev-tools \
     wget \
     zlib1g-dev
@@ -54,11 +56,12 @@ ENV LD_LIBRARY_PATH /usr/local/lib
 WORKDIR /usr/src/qbittorrent
 
 RUN apt-get update && apt-get install -y \
-    libboost-python1.71.0 \
-    libboost-system1.71.0 \
+    libboost-python1.74.0 \
+    libboost-system1.74.0 \
     libqt5network5 \
+    libqt5sql5 \
     libqt5xml5 \
-    libssl1.1 \
+    libssl3 \
     python3 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
