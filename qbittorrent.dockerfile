@@ -74,7 +74,7 @@ COPY --from=0 /usr/local/lib/libtorrent-rasterbar.* /usr/local/lib/
 COPY --from=0 /usr/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
 
 # setup non-root user
-RUN useradd --shell /bin/bash --create-home qbtuser \
+RUN useradd --shell /bin/bash --create-home qbtuser --uid 1000 \
     && mkdir /config /data /downloads \
     && chown qbtuser: /config /data /downloads
 
