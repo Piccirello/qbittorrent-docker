@@ -65,7 +65,7 @@ RUN apt-get update && apt-get install -y \
     python3 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY --from=0 /usr/local/lib /usr/local/lib/
+COPY --from=0 /usr/local/lib/libtorrent-rasterbar.* /usr/local/lib/
 COPY --from=0 /usr/bin/qbittorrent-nox /usr/bin/qbittorrent-nox
 
 # setup non-root user
