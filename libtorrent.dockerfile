@@ -1,9 +1,6 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-RUN echo "Starting build"
-
-# Ubuntu 20.04 workaround
 ENV TZ "America/Los_Angeles"
 ENV DEBIAN_FRONTEND=noninteractive
 
