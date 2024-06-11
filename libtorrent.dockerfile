@@ -8,17 +8,13 @@ ENV PATH "/usr/local/lib:${PATH}"
 ENV LD_LIBRARY_PATH /usr/local/lib
 
 RUN apt-get update && apt-get install -y \
-    autoconf \
-    automake \
+    libboost-tools-dev \
+    libboost-dev \
+    libboost-system-dev \
     g++ \
     libarchive-tools \
-    libboost-chrono-dev \
-    libboost-python-dev \
-    libboost-random-dev \
-    libboost-system-dev \
     libssl-dev \
     libtool \
-    make \
     wget
 
 ARG VERSION
@@ -33,10 +29,9 @@ RUN wget -q $LIBTORRENT_SRC -O libtorrent.tar.gz --secure-protocol=TLSv1_2 --htt
     && rm libtorrent.tar.gz
 
 # build and install
-RUN autoreconf -fi \
-    && ./configure CXXFLAGS=-std=c++17 \
-    && make -j$(nproc) \
-    && make install
+RUN echo "using gcc ;" >>~/user-config.jam \
+    && b2 crypto=openssl cxxstd=17 release \
+    && b2 install --prefix=/usr/local
 
 FROM $BASE_IMAGE
 

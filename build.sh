@@ -8,7 +8,7 @@ BASE_IMAGE="ubuntu:22.04"
 # libtorrent
 LIBTORRENT_DOCKER_FILE="./libtorrent.dockerfile"
 LIBTORRENT_IMAGE_NAME="piccirello/libtorrent"
-LIBTORRENT_VERSION="1.2.19"
+LIBTORRENT_VERSION="2.0.10"
 
 # qBittorrent
 QBITTORRENT_DOCKER_FILE="./qbittorrent.dockerfile"
