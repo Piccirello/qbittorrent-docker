@@ -41,7 +41,7 @@ RUN wget -q $QBITTORRENT_SRC -O qbittorrent.tar.gz --secure-protocol=TLSv1_2 --h
     && rm qbittorrent.tar.gz
 
 # build and install
-RUN ./configure --prefix=/usr --disable-gui \
+RUN ./configure --prefix=/usr --disable-gui --enable-stacktrace \
     && make -j$(nproc) \
     && make install
 
