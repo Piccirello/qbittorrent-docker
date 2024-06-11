@@ -40,6 +40,8 @@ RUN wget -q $QBITTORRENT_SRC -O qbittorrent.tar.gz --secure-protocol=TLSv1_2 --h
     && bsdtar --strip-components=1 -xzf ./qbittorrent.tar.gz \
     && rm qbittorrent.tar.gz
 
+ENV CXXFLAGS "-std=c++17"
+
 # build and install
 RUN ./configure --prefix=/usr --disable-gui --enable-stacktrace \
     && make -j$(nproc) \
