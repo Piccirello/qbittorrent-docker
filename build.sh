@@ -63,6 +63,14 @@ for arg; do
   fi
 done
 
+echo "=== Configuration ==="
+echo "Base image: $BASE_IMAGE"
+echo "Platform(s): $PLATFORMS"
+echo "Push image: $([[ "$PUSH_IMAGES" = "--push" ]] && echo yes || echo no)"
+echo "Tag w/ latest: $([[ "$TAG_WITH_LATEST" = "true" ]] && echo yes || echo no)"
+echo "=== END Configuration ==="
+echo ""
+
 # run
 if [ "$command" == "all" ] || [ "$command" == "libtorrent" ]; then
   echo "Updating $BASE_IMAGE base image"
