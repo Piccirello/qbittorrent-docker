@@ -13,7 +13,7 @@ LIBTORRENT_VERSION="2.0.10"
 # qBittorrent
 QBITTORRENT_DOCKER_FILE="./qbittorrent.dockerfile"
 QBITTORRENT_IMAGE_NAME="piccirello/qbittorrent"
-QBITTORRENT_VERSION="4.6.0"
+QBITTORRENT_VERSION="4.6.5"
 
 # platforms to build for
 PLATFORMS="linux/amd64,linux/arm64"

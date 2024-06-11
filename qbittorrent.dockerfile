@@ -26,6 +26,7 @@ RUN apt-get update && apt-get install -y \
     qtbase5-dev \
     qt5-qmake \
     qtbase5-dev-tools \
+    qtbase5-private-dev \
     qttools5-dev-tools \
     wget \
     zlib1g-dev
