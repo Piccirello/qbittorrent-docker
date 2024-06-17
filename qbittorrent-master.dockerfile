@@ -104,6 +104,10 @@ RUN apt-get update && apt-get install -y \
     libqt6xml6t64 \
     # used by completion scripts
     curl \
+    && apt remove -y \
+        libqt6network6t64 \
+        libqt6sql6t64 \
+        libqt6xml6t64 \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY --from=0 /usr/local/lib/libtorrent-rasterbar.* /usr/local/lib/
