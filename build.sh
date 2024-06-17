@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-# CONFIG
+### CONFIG ###
 
 BASE_IMAGE="ubuntu:24.04"
 
@@ -24,7 +24,7 @@ QT_VERSION="6.7.1"
 # platforms to build for
 PLATFORMS="linux/amd64,linux/arm64"
 
-# END CONFIG
+### END CONFIG ###
 
 TAG_WITH_LATEST="true"
 USE_MASTER=""
