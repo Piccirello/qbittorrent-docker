@@ -12,15 +12,17 @@ LIBTORRENT_VERSION="2.0.10"
 
 # qBittorrent
 QBITTORRENT_DOCKER_FILE="./qbittorrent.dockerfile"
-QBITTORRENT_MASTER_DOCKER_FILE="./qbittorrent-master.dockerfile"
 QBITTORRENT_IMAGE_NAME="piccirello/qbittorrent"
 QBITTORRENT_VERSION="4.6.5"
-QBITTORRENT_MASTER_SRC="https://github.com/qbittorrent/qBittorrent/archive/refs/heads/master.tar.gz"
 
-# QT - used when building qBittorrent's master branch.
-# This is due to Ubuntu's package repository not containing a recent
-# enough version of Qt6
+# qBitorrent master
+QBITTORRENT_MASTER_DOCKER_FILE="./qbittorrent-master.dockerfile"
+QBITTORRENT_MASTER_SRC="https://github.com/qbittorrent/qBittorrent/archive/refs/heads/master.tar.gz"
+# Used when building qBittorrent's master branch due to Ubuntu's package
+# repository not containing a recent enough version of Qt6
+QT_DOCKER_FILE="./libtorrent-qt.dockerfile"
 QT_VERSION="6.7.1"
+QT_IMAGE_NAME="piccirello/libtorrent-qt"
 
 # platforms to build for
 PLATFORMS="linux/amd64,linux/arm64"
@@ -42,6 +44,8 @@ QBITTORRENT_VERSION_ARR=(${QBITTORRENT_VERSION//./ })
 QBITTORRENT_MAJOR_VERSION="${QBITTORRENT_VERSION_ARR[0]}"
 QBITTORRENT_MINOR_VERSION="${QBITTORRENT_VERSION_ARR[1]}"
 QBITTORRENT_PATCH_VERSION="${QBITTORRENT_VERSION_ARR[2]}"
+
+QT_VERSION_WO_DOTS="${QT_VERSION//.}"
 
 # parse command
 if [ $# -eq 0 ]; then
@@ -109,16 +113,25 @@ fi
 
 if [ "$command" == "all" ] || [ "$command" == "qbittorrent" ]; then
   if [[ "$USE_MASTER" = "true" ]]; then
+    echo "Building Qt6"
+    docker buildx build \
+      -f "$QT_DOCKER_FILE" \
+      -t "$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION" \
+      --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
+      --build-arg QT_PACKAGE="qt.qt6.$QT_VERSION_WO_DOTS.linux_gcc_64" \
+      --secret id=qtaccount,src=./qtaccount.ini \
+      --platform "$PLATFORMS" \
+      $PUSH_IMAGES \
+      .
+
     echo "Building qbittorrent master branch"
     docker buildx build \
       -f "$QBITTORRENT_MASTER_DOCKER_FILE" \
       -t "$QBITTORRENT_IMAGE_NAME:master" \
       -t "$QBITTORRENT_IMAGE_NAME:master-$(date "+%Y-%m-%d")" \
-      --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
+      --build-arg BASE_IMAGE="$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION" \
       --build-arg QT_VERSION="$QT_VERSION" \
-      --build-arg QT_VERSION_WO_DOTS="${QT_VERSION//.}" \
       --build-arg QBITTORRENT_SRC="$QBITTORRENT_MASTER_SRC" \
-      --secret id=qtaccount,src=./qtaccount.ini \
       --platform "$PLATFORMS" \
       $PUSH_IMAGES \
       .
