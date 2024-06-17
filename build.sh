@@ -15,6 +15,7 @@ QBITTORRENT_DOCKER_FILE="./qbittorrent.dockerfile"
 QBITTORRENT_MASTER_DOCKER_FILE="./qbittorrent-master.dockerfile"
 QBITTORRENT_IMAGE_NAME="piccirello/qbittorrent"
 QBITTORRENT_VERSION="4.6.5"
+QBITTORRENT_MASTER_SRC="https://github.com/qbittorrent/qBittorrent/archive/refs/heads/master.tar.gz"
 
 # QT - used when building qBittorrent's master branch.
 # This is due to Ubuntu's package repository not containing a recent
@@ -116,6 +117,7 @@ if [ "$command" == "all" ] || [ "$command" == "qbittorrent" ]; then
       --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
       --build-arg QT_VERSION="$QT_VERSION" \
       --build-arg QT_VERSION_WO_DOTS="${QT_VERSION//.}" \
+      --build-arg QBITTORRENT_SRC="$QBITTORRENT_MASTER_SRC" \
       --secret id=qtaccount,src=./qtaccount.ini \
       --platform "$PLATFORMS" \
       $PUSH_IMAGES \
