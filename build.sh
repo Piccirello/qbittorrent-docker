@@ -12,6 +12,7 @@ LIBTORRENT_VERSION="2.0.10"
 
 # qBittorrent
 QBITTORRENT_DOCKER_FILE="./qbittorrent.dockerfile"
+QBITTORRENT_MASTER_DOCKER_FILE="./qbittorrent-master.dockerfile"
 QBITTORRENT_IMAGE_NAME="piccirello/qbittorrent"
 QBITTORRENT_VERSION="4.6.5"
 
@@ -21,6 +22,7 @@ PLATFORMS="linux/amd64,linux/arm64"
 # END CONFIG
 
 TAG_WITH_LATEST="true"
+USE_MASTER=""
 PUSH_IMAGES="--push"
 
 # shellcheck disable=SC2206
@@ -61,6 +63,10 @@ for arg; do
     # load the image into the local registry
     PUSH_IMAGES="--load"
   fi
+
+  if [ "$arg" = "--master" ]; then
+    USE_MASTER="true"
+  fi
 done
 
 echo "=== Configuration ==="
@@ -68,6 +74,7 @@ echo "Base image: $BASE_IMAGE"
 echo "Platform(s): $PLATFORMS"
 echo "Push image: $([[ "$PUSH_IMAGES" = "--push" ]] && echo yes || echo no)"
 echo "Tag w/ latest: $([[ "$TAG_WITH_LATEST" = "true" ]] && echo yes || echo no)"
+echo "Use master branch: $([[ "$USE_MASTER" = "true" ]] && echo yes || echo no)"
 echo "=== END Configuration ==="
 echo ""
 
@@ -75,6 +82,11 @@ echo ""
 if [ "$command" == "all" ] || [ "$command" == "libtorrent" ]; then
   echo "Updating $BASE_IMAGE base image"
   docker pull "$BASE_IMAGE"
+
+  if [[ "$USE_MASTER" = "true" ]]; then
+    echo "Building libtorrent master branch is not currently supported"
+    exit 1
+  fi
 
   echo "Building libtorrent $LIBTORRENT_VERSION"
   docker buildx build \
@@ -90,15 +102,30 @@ if [ "$command" == "all" ] || [ "$command" == "libtorrent" ]; then
 fi
 
 if [ "$command" == "all" ] || [ "$command" == "qbittorrent" ]; then
-  echo "Building qbittorrent $QBITTORRENT_VERSION"
-  docker buildx build \
-    -f "$QBITTORRENT_DOCKER_FILE" \
-    -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_VERSION" \
-    -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_MAJOR_VERSION.$QBITTORRENT_MINOR_VERSION" \
-    ${TAG_WITH_LATEST:+ -t "$QBITTORRENT_IMAGE_NAME:latest"} \
-    --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
-    --build-arg VERSION="$QBITTORRENT_VERSION" \
-    --platform "$PLATFORMS" \
-    $PUSH_IMAGES \
-    .
+  if [[ "$USE_MASTER" = "true" ]]; then
+    echo "Building qbittorrent master branch"
+    docker buildx build \
+      -f "$QBITTORRENT_MASTER_DOCKER_FILE" \
+      -t "$QBITTORRENT_IMAGE_NAME:master" \
+      -t "$QBITTORRENT_IMAGE_NAME:master-$(date "+%Y-%m-%d")" \
+      --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
+      --build-arg QT_VERSION="6.7.1" \
+      --build-arg QT_VERSION_WO_DOTS="671" \
+      --secret id=qtaccount,src=./qtaccount.ini \
+      --platform "$PLATFORMS" \
+      $PUSH_IMAGES \
+      .
+  else
+    echo "Building qbittorrent $QBITTORRENT_VERSION"
+    docker buildx build \
+      -f "$QBITTORRENT_DOCKER_FILE" \
+      -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_VERSION" \
+      -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_MAJOR_VERSION.$QBITTORRENT_MINOR_VERSION" \
+      ${TAG_WITH_LATEST:+ -t "$QBITTORRENT_IMAGE_NAME:latest"} \
+      --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
+      --build-arg VERSION="$QBITTORRENT_VERSION" \
+      --platform "$PLATFORMS" \
+      $PUSH_IMAGES \
+      .
+  fi
 fi
