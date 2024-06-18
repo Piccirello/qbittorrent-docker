@@ -25,7 +25,7 @@ QT_VERSION="6.7.1"
 QT_IMAGE_NAME="piccirello/libtorrent-qt"
 
 # platforms to build for
-PLATFORMS="linux/amd64,linux/arm64"
+PLATFORMS="linux/amd64"
 
 ### END CONFIG ###
 
