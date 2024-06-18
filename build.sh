@@ -113,16 +113,23 @@ fi
 
 if [ "$command" == "all" ] || [ "$command" == "qbittorrent" ]; then
   if [[ "$USE_MASTER" = "true" ]]; then
-    echo "Building Qt6"
-    docker buildx build \
-      -f "$QT_DOCKER_FILE" \
-      -t "$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION" \
-      --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
-      --build-arg QT_PACKAGE="qt.qt6.$QT_VERSION_WO_DOTS.linux_gcc_64" \
-      --secret id=qtaccount,src=./qtaccount.ini \
-      --platform "$PLATFORMS" \
-      $PUSH_IMAGES \
-      .
+    qt_image="$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION"
+    docker pull "$qt_image" --platform "$PLATFORMS"
+
+    # only build Qt image if it doesn't already exist
+    # this allows skipping this step, which requires qtaccount.ini to exist
+    if ! docker image inspect "$qt_image" >/dev/null 2>&1; then
+      echo "Building Qt6"
+      docker buildx build \
+        -f "$QT_DOCKER_FILE" \
+        -t "$qt_image" \
+        --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
+        --build-arg QT_PACKAGE="qt.qt6.$QT_VERSION_WO_DOTS.linux_gcc_64" \
+        --secret id=qtaccount,src=./qtaccount.ini \
+        --platform "$PLATFORMS" \
+        $PUSH_IMAGES \
+        .
+    fi
 
     echo "Building qbittorrent master branch"
     docker buildx build \
