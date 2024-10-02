@@ -1,11 +1,11 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-ENV TZ "America/Los_Angeles"
+ENV TZ="America/Los_Angeles"
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV PATH "/usr/local/lib:${PATH}"
-ENV LD_LIBRARY_PATH /usr/local/lib
+ENV PATH="/usr/local/lib:${PATH}"
+ENV LD_LIBRARY_PATH=/usr/local/lib
 
 RUN apt-get update && apt-get install -y \
     libboost-tools-dev \

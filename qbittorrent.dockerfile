@@ -1,11 +1,11 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-ENV TZ "America/Los_Angeles"
+ENV TZ="America/Los_Angeles"
 ENV DEBIAN_FRONTEND=noninteractive
 
-ENV PATH "/usr/local/lib:${PATH}"
-ENV LD_LIBRARY_PATH /usr/local/lib
+ENV PATH="/usr/local/lib:${PATH}"
+ENV LD_LIBRARY_PATH=/usr/local/lib
 
 RUN apt-get update && apt-get install -y \
     autoconf \
@@ -41,7 +41,7 @@ RUN wget -q $QBITTORRENT_SRC -O qbittorrent.tar.gz --secure-protocol=TLSv1_2 --h
     && bsdtar --strip-components=1 -xzf ./qbittorrent.tar.gz \
     && rm qbittorrent.tar.gz
 
-ENV CXXFLAGS "-std=c++17"
+ENV CXXFLAGS="-std=c++17"
 
 # build and install
 RUN ./configure --prefix=/usr --disable-gui --enable-stacktrace \
@@ -50,8 +50,8 @@ RUN ./configure --prefix=/usr --disable-gui --enable-stacktrace \
 
 FROM $BASE_IMAGE
 
-ENV PATH "/usr/local/lib:${PATH}"
-ENV LD_LIBRARY_PATH /usr/local/lib
+ENV PATH="/usr/local/lib:${PATH}"
+ENV LD_LIBRARY_PATH=/usr/local/lib
 
 WORKDIR /usr/src/qbittorrent
 

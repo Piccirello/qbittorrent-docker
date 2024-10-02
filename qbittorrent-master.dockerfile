@@ -1,14 +1,14 @@
 ARG BASE_IMAGE
 FROM $BASE_IMAGE
 
-ENV TZ "America/Los_Angeles"
+ENV TZ="America/Los_Angeles"
 ENV DEBIAN_FRONTEND=noninteractive
 
 ARG QT_VERSION
 
-ENV PATH "/usr/local/lib:${PATH}"
-ENV CMAKE_PREFIX_PATH "/usr/src/qt/$QT_VERSION/gcc_64/"
-ENV LD_LIBRARY_PATH "/usr/src/qt/$QT_VERSION/gcc_64/lib"
+ENV PATH="/usr/local/lib:${PATH}"
+ENV CMAKE_PREFIX_PATH="/usr/src/qt/$QT_VERSION/gcc_64/"
+ENV LD_LIBRARY_PATH="/usr/src/qt/$QT_VERSION/gcc_64/lib"
 
 ARG QBITTORRENT_SRC=https://github.com/qbittorrent/qBittorrent/archive/refs/heads/master.tar.gz
 
@@ -28,9 +28,9 @@ FROM $BASE_IMAGE
 
 ARG QT_VERSION
 
-ENV PATH "/usr/local/lib:${PATH}"
-ENV LD_LIBRARY_PATH "/usr/local/lib"
-ENV QT_PLUGIN_PATH "/usr/local/plugins"
+ENV PATH="/usr/local/lib:${PATH}"
+ENV LD_LIBRARY_PATH="/usr/local/lib"
+ENV QT_PLUGIN_PATH="/usr/local/plugins"
 
 RUN apt-get update && apt-get install -y \
     libboost-python1.83.0 \
