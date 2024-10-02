@@ -1,7 +1,7 @@
 # qbittorrent-docker
-Build libtorrent 2 and qBittorrent 4.6 from source in Docker on Ubuntu 24.04. qBittorrent runs as user 1001.
+Build libtorrent 2 and qBittorrent 5 from source in Docker on Ubuntu 24.04. qBittorrent runs as user 1001.
 
-This project also supports building the qBittorrent master branch with Qt6 compiled from source.
+This project also builds Qt6 from source due to the version of Qt6 in Ubuntu's package repo not being recent enough.
 
 ## Usage
 
@@ -15,6 +15,7 @@ You can modify the build behavior using various flags.
 
 |Flag   | Behavior  |
 |---|---|
-| `--no-push` | Don't push the built image(s) to Docker Hub  |
+| `--no-push` | Don't push the built image(s) to Docker Hub |
 | `--no-latest` | Don't tag the build image(s) w/ `latest` |
-| `--master` | Build the master branch, ignoring the `QBITTORRENT_VERSION` value. This will also compile the Qt version specified by `QT_VERSION`. |
+| `--master` | Build the master branch, ignoring the `QBITTORRENT_VERSION` value. |
+
