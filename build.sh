@@ -13,13 +13,11 @@ LIBTORRENT_VERSION="2.0.10"
 # qBittorrent
 QBITTORRENT_DOCKER_FILE="./qbittorrent.dockerfile"
 QBITTORRENT_IMAGE_NAME="piccirello/qbittorrent"
-QBITTORRENT_VERSION="4.6.5"
-
-# qBitorrent master
-QBITTORRENT_MASTER_DOCKER_FILE="./qbittorrent-master.dockerfile"
+QBITTORRENT_VERSION="5.0.0"
+QBITTORRENT_RELEASE_SRC="https://github.com/qbittorrent/qBittorrent/archive/release-${QBITTORRENT_VERSION}.tar.gz"
 QBITTORRENT_MASTER_SRC="https://github.com/qbittorrent/qBittorrent/archive/refs/heads/master.tar.gz"
-# Used when building qBittorrent's master branch due to Ubuntu's package
-# repository not containing a recent enough version of Qt6
+
+# Used for building Qt due to Ubuntu's package repository not containing a recent enough version of Qt6
 QT_DOCKER_FILE="./libtorrent-qt.dockerfile"
 QT_VERSION="6.7.1"
 QT_IMAGE_NAME="piccirello/libtorrent-qt"
@@ -112,47 +110,43 @@ if [ "$command" == "all" ] || [ "$command" == "libtorrent" ]; then
 fi
 
 if [ "$command" == "all" ] || [ "$command" == "qbittorrent" ]; then
-  if [[ "$USE_MASTER" = "true" ]]; then
-    qt_image="$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION"
-    docker pull "$qt_image" --platform "$PLATFORMS"
+  qt_image="$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION"
+  docker pull "$qt_image" --platform "$PLATFORMS"
 
-    # only build Qt image if it doesn't already exist
-    # this allows skipping this step, which requires qtaccount.ini to exist
-    if ! docker image inspect "$qt_image" >/dev/null 2>&1; then
-      echo "Building Qt6"
-      docker buildx build \
-        -f "$QT_DOCKER_FILE" \
-        -t "$qt_image" \
-        --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
-        --build-arg QT_PACKAGE="qt.qt6.$QT_VERSION_WO_DOTS.linux_gcc_64" \
-        --secret id=qtaccount,src=./qtaccount.ini \
-        --platform "$PLATFORMS" \
-        $PUSH_IMAGES \
-        .
-    fi
-
-    echo "Building qbittorrent master branch"
+  # only build Qt image if it doesn't already exist
+  # this allows skipping this step, which requires qtaccount.ini to exist
+  if ! docker image inspect "$qt_image" >/dev/null 2>&1; then
+    echo "Building Qt6"
     docker buildx build \
-      -f "$QBITTORRENT_MASTER_DOCKER_FILE" \
-      -t "$QBITTORRENT_IMAGE_NAME:master" \
-      -t "$QBITTORRENT_IMAGE_NAME:master-$(date "+%Y-%m-%d")" \
-      --build-arg BASE_IMAGE="$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION" \
-      --build-arg QT_VERSION="$QT_VERSION" \
-      --build-arg QBITTORRENT_SRC="$QBITTORRENT_MASTER_SRC" \
-      --platform "$PLATFORMS" \
-      $PUSH_IMAGES \
-      .
-  else
-    echo "Building qbittorrent $QBITTORRENT_VERSION"
-    docker buildx build \
-      -f "$QBITTORRENT_DOCKER_FILE" \
-      -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_VERSION" \
-      -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_MAJOR_VERSION.$QBITTORRENT_MINOR_VERSION" \
-      ${TAG_WITH_LATEST:+ -t "$QBITTORRENT_IMAGE_NAME:latest"} \
+      -f "$QT_DOCKER_FILE" \
+      -t "$qt_image" \
       --build-arg BASE_IMAGE="$LIBTORRENT_IMAGE_NAME:$LIBTORRENT_VERSION" \
-      --build-arg VERSION="$QBITTORRENT_VERSION" \
+      --build-arg QT_PACKAGE="qt.qt6.$QT_VERSION_WO_DOTS.linux_gcc_64" \
+      --secret id=qtaccount,src=./qtaccount.ini \
       --platform "$PLATFORMS" \
       $PUSH_IMAGES \
       .
   fi
+
+  QBITTORRENT_SRC="$QBITTORRENT_RELEASE_SRC"
+  if [[ "$USE_MASTER" = "true" ]]; then
+    TAG_WITH_LATEST=""
+    QBITTORRENT_VERSION="master"
+    QBITTORRENT_MAJOR_VERSION="master"
+    QBITTORRENT_MINOR_VERSION="$(date "+%Y-%m-%d")"
+    QBITTORRENT_SRC="$QBITTORRENT_MASTER_SRC"
+  fi
+
+  echo "Building qbittorrent $QBITTORRENT_VERSION"
+  docker buildx build \
+    -f "$QBITTORRENT_DOCKER_FILE" \
+    -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_VERSION" \
+    -t "$QBITTORRENT_IMAGE_NAME:$QBITTORRENT_MAJOR_VERSION.$QBITTORRENT_MINOR_VERSION" \
+    ${TAG_WITH_LATEST:+ -t "$QBITTORRENT_IMAGE_NAME:latest"} \
+    --build-arg BASE_IMAGE="$QT_IMAGE_NAME:$LIBTORRENT_VERSION-$QT_VERSION" \
+    --build-arg QT_VERSION="$QT_VERSION" \
+    --build-arg QBITTORRENT_SRC="$QBITTORRENT_SRC" \
+    --platform "$PLATFORMS" \
+    $PUSH_IMAGES \
+    .
 fi
